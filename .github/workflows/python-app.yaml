@@ -1,43 +1,36 @@
 name: cd-criticalasset-assistants
+
 on:
- push:
-  branches:
-    - main
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: dev
-    
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: install databricks-cli
-        run: |
-            curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
-            export PATH="$HOME/.databricks/bin:$PATH"
-            databricks --version
-      
-      - name: Configure Databricks CLI (env based)
-        run: |
-          databricks auth describe
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-  
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+          databricks --version
+
+      - name: Verify Databricks auth
+        run: databricks auth describe
+
       - name: Upload file to Databricks Workspace
         run: |
-          databricks workspace import /Shared/main.py \
-            --file main.py \
-            --language PYTHON \
-            --overwrite
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          databricks workspace import main.py /Shared/main.py --overwrite
 
       - name: Trigger Databricks Job
         run: |
           databricks jobs run-now ${{ secrets.JOB_ID }}
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
