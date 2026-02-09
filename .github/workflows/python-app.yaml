@@ -28,7 +28,7 @@ jobs:
 
       - name: Upload file to Databricks Workspace 
         run: |       
-          databricks workspace import /Shared/main.py --file main.py --language PYTHON --overwrite
+          databricks workspace import /Shared/main.py --file python/main.py --language PYTHON --overwrite
 
 
       - name: Trigger Databricks Job
