@@ -1,4 +1,3 @@
-name: cd-criticalasset-assistants
 
 on:
   push:
