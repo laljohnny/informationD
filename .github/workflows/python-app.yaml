@@ -26,9 +26,9 @@ jobs:
       - name: Verify Databricks auth
         run: databricks auth describe
 
-      - name: Upload file to Databricks Workspace
-        run: |
-          databricks workspace import main.py /Shared/main.py --overwrite
+      - name: Upload file to Databricks Workspace 
+        run: |       
+            databricks workspace import /Shared/main.py \ --file main.py \ --language PYTHON \ --overwrite
 
       - name: Trigger Databricks Job
         run: |
