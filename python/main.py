@@ -12,7 +12,8 @@ data = [
     (3, "John"),
     (4, "Basha"),
     (5, "lal"),
-    (6, "johnny")
+    (6, "johnny"),
+    (7, "Mahesh")
 ]
 
 # Create DataFrame with schema
